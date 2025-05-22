@@ -1,0 +1,4 @@
+apiVersion: v2
+type: application
+name: proconnect-carte-agent
+version: 0.0.1

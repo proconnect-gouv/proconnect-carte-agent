@@ -1,0 +1,21 @@
+{{- $envVars := include "proconnect-carte-agent.common.env" (list . .Values.app) -}}
+{{- $fullName := include "proconnect-carte-agent.app.fullname" . -}}
+{{- $component := "app" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "proconnect-carte-agent.common.labels" (list . $component) | nindent 4 }}
+  annotations:
+    {{- toYaml $.Values.app.service.annotations | nindent 4 }}
+spec:
+  type: {{ .Values.app.service.type }}
+  ports:
+    - port: {{ .Values.app.service.port }}
+      targetPort: {{ .Values.app.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "proconnect-carte-agent.common.selectorLabels" (list . $component) | nindent 4 }}

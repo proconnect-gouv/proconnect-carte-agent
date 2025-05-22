@@ -1,0 +1,141 @@
+# Default values for proconnect-carte-agent.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## @section General configuration
+
+## @param image.repository Repository to use to pull proconnect-carte-agent's container image
+## @param image.tag proconnect-carte-agent's container tag
+## @param image.pullPolicy Container image pull policy
+## @extra image.credentials.username Username for container registry authentication
+## @extra image.credentials.password Password for container registry authentication
+## @extra image.credentials.registry Registry url for which the credentials are specified
+## @extra image.credentials.name Name of the generated secret for imagePullSecrets
+image:
+  repository: ghcr.io/proconnect-gouv/proconnect-carte-agent
+  pullPolicy: IfNotPresent
+  tag: "main"
+
+## @param nameOverride Override the chart name
+## @param fullnameOverride Override the full application name
+nameOverride: ""
+fullnameOverride: ""
+
+## @skip commonEnvVars
+commonEnvVars: &commonEnvVars
+  <<: []
+
+## @param ingress.enabled whether to enable the Ingress or not
+## @param ingress.className IngressClass to use for the Ingress
+## @param ingress.host Host for the Ingress
+## @param ingress.path Path to use for the Ingress
+ingress:
+  enabled: false
+  className: null
+  host: proconnect-carte-agent.example.com
+  paths:
+  - path: '/'
+    pathType: Prefix
+  ## @param ingress.hosts Additional host to configure for the Ingress
+  hosts: []
+  #  - chart-example.local
+  ## @param ingress.tls.enabled Weather to enable TLS for the Ingress
+  ## @skip ingress.tls.additional
+  ## @extra ingress.tls.additional[].secretName Secret name for additional TLS config
+  ## @extra ingress.tls.additional[].hosts[] Hosts for additional TLS config
+  tls:
+    enabled: true
+    additional: []
+
+  ## @param ingress.customBackends Add custom backends to ingress
+  customBackends: []
+
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+
+## @section app
+
+app:
+
+  ## @param app.pdb.enabled Enable pdb on backend
+  pdb:
+    enabled: true
+
+  ## @param app.command Override the app container command
+  command: []
+
+  ## @param app.args Override the app container args
+  args: []
+
+  ## @param app.replicas Amount of app replicas
+  replicas: 3
+
+  ## @param app.shareProcessNamespace Enable share process namespace between containers
+  shareProcessNamespace: false
+
+  ## @param app.sidecars Add sidecars containers to app deployment
+  sidecars: []
+
+  ## @param app.securityContext Configure app Pod security context
+  securityContext: null
+
+  ## @param app.envVars Configure app container environment variables
+  ## @extra app.envVars.BY_VALUE Example environment variable by setting value directly
+  ## @extra app.envVars.FROM_CONFIGMAP.configMapKeyRef.name Name of a ConfigMap when configuring env vars from a ConfigMap
+  ## @extra app.envVars.FROM_CONFIGMAP.configMapKeyRef.key Key within a ConfigMap when configuring env vars from a ConfigMap
+  ## @extra app.envVars.FROM_SECRET.secretKeyRef.name Name of a Secret when configuring env vars from a Secret
+  ## @extra app.envVars.FROM_SECRET.secretKeyRef.key Key within a Secret when configuring env vars from a Secret
+  ## @skip app.envVars
+  envVars:
+    <<: *commonEnvVars
+
+  ## @param app.podAnnotations Annotations to add to the app Pod
+  podAnnotations: {}
+
+  ## @param app.service.type app Service type
+  ## @param app.service.port app Service listening port
+  ## @param app.service.targetPort app container listening port
+  ## @param app.service.annotations Annotations to add to the app Service
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+    annotations: {}
+
+  ## @param app.probes.liveness.path [nullable] Configure path for app HTTP liveness probe
+  ## @param app.probes.liveness.targetPort [nullable] Configure port for app HTTP liveness probe
+  ## @param app.probes.liveness.initialDelaySeconds [nullable] Configure initial delay for app liveness probe
+  ## @param app.probes.liveness.initialDelaySeconds [nullable] Configure timeout for app liveness probe
+  ## @param app.probes.startup.path [nullable] Configure path for app HTTP startup probe
+  ## @param app.probes.startup.targetPort [nullable] Configure port for app HTTP startup probe
+  ## @param app.probes.startup.initialDelaySeconds [nullable] Configure initial delay for app startup probe
+  ## @param app.probes.startup.initialDelaySeconds [nullable] Configure timeout for app startup probe
+  ## @param app.probes.readiness.path [nullable] Configure path for app HTTP readiness probe
+  ## @param app.probes.readiness.targetPort [nullable] Configure port for app HTTP readiness probe
+  ## @param app.probes.readiness.initialDelaySeconds [nullable] Configure initial delay for app readiness probe
+  ## @param app.probes.readiness.initialDelaySeconds [nullable] Configure timeout for app readiness probe
+  probes:
+    liveness:
+      targetPort: 3000
+      path: /ping
+      initialDelaySeconds: 10
+    #readiness:
+    #  path: /__lbheartbeat__
+    #  initialDelaySeconds: 10
+
+  ## @param app.resources Resource requirements for the app container
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+
+  ## @param app.nodeSelector Node selector for the app Pod
+  nodeSelector: {}
+
+  ## @param app.tolerations Tolerations for the app Pod
+  tolerations: []
+
+  ## @param app.affinity Affinity for the app Pod
+  affinity: {}

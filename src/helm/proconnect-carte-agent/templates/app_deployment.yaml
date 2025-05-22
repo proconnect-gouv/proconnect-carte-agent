@@ -1,0 +1,97 @@
+{{- $envVars := include "proconnect-carte-agent.common.env" (list . .Values.app) -}}
+{{- $fullName := include "proconnect-carte-agent.app.fullname" . -}}
+{{- $component := "app" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "proconnect-carte-agent.common.labels" (list . $component) | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      {{- include "proconnect-carte-agent.common.selectorLabels" (list . $component) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.app.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "proconnect-carte-agent.common.selectorLabels" (list . $component) | nindent 8 }}
+    spec:
+      {{- if $.Values.image.credentials }}
+      imagePullSecrets:
+        - name: {{ include "proconnect-carte-agent.secret.dockerconfigjson.name" (dict "fullname" (include "proconnect-carte-agent.fullname" .) "imageCredentials" $.Values.image.credentials) }}
+      {{- end}}
+      shareProcessNamespace: {{ .Values.app.shareProcessNamespace }}
+      containers:
+        {{- with .Values.app.sidecars }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ (.Values.app.image | default dict).repository | default .Values.image.repository }}:{{ (.Values.app.image | default dict).tag | default .Values.image.tag }}"
+          imagePullPolicy: {{ (.Values.app.image | default dict).pullPolicy | default .Values.image.pullPolicy }}
+          {{- with .Values.app.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.app.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            {{- if $envVars}}
+            {{- $envVars | indent 12 }}
+            {{- end }}
+          {{- with .Values.app.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.app.service.targetPort }}
+              protocol: TCP
+          {{- if .Values.app.probes.liveness }}
+          livenessProbe:
+            {{- include "proconnect-carte-agent.probes.abstract" (merge .Values.app.probes.liveness (dict "targetPort" .Values.app.service.targetPort )) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.probes.readiness }}
+          readinessProbe:
+            {{- include "proconnect-carte-agent.probes.abstract" (merge .Values.app.probes.readiness (dict "targetPort" .Values.app.service.targetPort )) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.app.probes.startup }}
+          startupProbe:
+            {{- include "proconnect-carte-agent.probes.abstract" (merge .Values.app.probes.startup (dict "targetPort" .Values.app.service.targetPort )) | nindent 12 }}
+          {{- end }}
+          {{- with .Values.app.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.app.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.app.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.app.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{ if .Values.app.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      {{- include "proconnect-carte-agent.common.selectorLabels" (list . $component) | nindent 6 }}
+{{ end }}

@@ -1,0 +1,25 @@
+repositories: []
+
+releases:
+  - name: proconnect-carte-agent
+    version: {{ .Values.version }}
+    namespace: {{ .Namespace }}
+    chart: ./proconnect-carte-agent
+    values:
+      - env.d/{{ .Environment.Name }}/values.proconnect-carte-agent.yaml.gotmpl
+    secrets: []
+
+environments:
+  dev:
+    values:
+      - version: 0.0.1
+    secrets: []
+  staging:
+    values:
+      - version: 0.0.1
+    secrets: []
+  outscale-production:
+    values:
+      - version: 0.0.1
+    secrets: []
+
