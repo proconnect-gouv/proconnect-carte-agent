@@ -50,8 +50,7 @@ ingress:
   ## @param ingress.customBackends Add custom backends to ingress
   customBackends: []
 
-  annotations:
-    nginx.ingress.kubernetes.io/use-regex: "true"
+  annotations: {}
 
 ## @section app
 

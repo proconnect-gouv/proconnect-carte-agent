@@ -7,4 +7,4 @@ WORKDIR /app
 
 RUN npm ci
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

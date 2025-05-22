@@ -7,9 +7,6 @@ docker_build(
     context='.',
     dockerfile='./Dockerfile',
     only=['./src/app', './env.d'],
-    live_update=[
-        sync('./src/app', '/app'),
-    ]
 )
 
 watch_file('src/helm')

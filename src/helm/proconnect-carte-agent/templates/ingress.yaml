@@ -1,16 +1,20 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "proconnect-carte-agent.fullname" . -}}
 {{- $port := .Values.app.service.port -}}
+{{- $namespace := .Release.Namespace -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ $namespace | quote }}
   labels:
     {{- include "proconnect-carte-agent.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
   {{- toYaml . | nindent 4 }}
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
+    nginx.ingress.kubernetes.io/auth-tls-secret: {{ $namespace }}/proconnect-carte-agent-ca
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}

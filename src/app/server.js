@@ -10,7 +10,7 @@ const HOST = process.env.HOST || '0.0.0.0';
 // Basic API endpoint
 app.get('/', (req, res) => {
   console.log('Client connected');
-  res.status(200).json({ message: 'Hello' });
+  res.status(200).json({ message: 'Hello', headers: req.headers });
 });
 
 app.get('/ping', (req, res) => {
