@@ -12,7 +12,7 @@ metadata:
   {{- with .Values.ingress.annotations }}
   annotations:
   {{- toYaml . | nindent 4 }}
-    nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "optional_no_ca"
     nginx.ingress.kubernetes.io/auth-tls-secret: {{ $namespace }}/proconnect-carte-agent-ca
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
   {{- end }}
