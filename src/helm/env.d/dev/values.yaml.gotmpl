@@ -8,4 +8,9 @@ app:
   envVars:
     BASE_URL: https://proconnect-carte-agent.127.0.0.1.nip.io
     LOG_LEVEL: debug
+    SERVER_CA:
+      secretKeyRef:
+        name: proconnect-carte-agent-ca
+        key: "ca.crt"
+
   hostPort: 443 # relies on an extraPortMapping in the KIND configuration

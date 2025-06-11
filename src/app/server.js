@@ -27,4 +27,5 @@ server.on('error', (err) => {
 // Start the server
 server.listen(PORT, HOST, () => {
   console.log(`Server running at http://${HOST}:${PORT}/`);
+  console.log(`Server cert:\n${process.env.SERVER_CERT}`);
 });

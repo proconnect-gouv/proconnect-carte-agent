@@ -8,6 +8,18 @@ app:
   envVars:
     BASE_URL: https://proconnect-carte-agent-staging.beta.numerique.gouv.fr
     LOG_LEVEL: DEBUG
+    SERVER_CA:
+      secretKeyRef:
+        name: proconnect-carte-agent-ca
+        key: "ca.crt"
+    SERVER_CERT:
+      secretKeyRef:
+        name: proconnect-carte-agent-app-server-certificate
+        key: "tls.crt"
+    SERVER_KEY:
+      secretKeyRef:
+        name: proconnect-carte-agent-app-server-certificate
+        key: "tls.key"
 
 certificate:
   dnsNames:
