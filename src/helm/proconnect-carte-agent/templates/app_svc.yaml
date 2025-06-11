@@ -16,6 +16,6 @@ spec:
     - port: {{ .Values.app.service.port }}
       targetPort: {{ .Values.app.service.targetPort }}
       protocol: TCP
-      name: http
+      name: https
   selector:
     {{- include "proconnect-carte-agent.common.selectorLabels" (list . $component) | nindent 4 }}

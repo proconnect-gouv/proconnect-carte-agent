@@ -70,7 +70,7 @@ app:
   ## @param app.service.annotations Annotations to add to the app Service
   service:
     type: LoadBalancer
-    port: 80
+    port: 443
     targetPort: 3000
     annotations: {}
 
