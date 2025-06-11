@@ -96,7 +96,7 @@ app:
   ## @param app.service.targetPort app container listening port
   ## @param app.service.annotations Annotations to add to the app Service
   service:
-    type: ClusterIP
+    type: LoadBalancer
     port: 80
     targetPort: 3000
     annotations: {}
