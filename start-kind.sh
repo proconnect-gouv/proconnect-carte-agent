@@ -82,3 +82,6 @@ data:
     host: "localhost:${reg_port}"
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
+
+kubectl create namespace proconnect-carte-agent
+kubectl -n proconnect-carte-agent create secret tls proconnect-carte-agent-app-server-certificate --key /tmp/127.0.0.1.nip.io+1-key.pem --cert /tmp/127.0.0.1.nip.io+1.pem
