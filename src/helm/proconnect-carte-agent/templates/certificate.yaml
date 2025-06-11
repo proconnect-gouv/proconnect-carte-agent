@@ -1,0 +1,25 @@
+{{- if .Values.certificate -}}
+{{- $envVars := include "proconnect-carte-agent.common.env" (list . .Values.app) -}}
+{{- $fullName := include "proconnect-carte-agent.app.fullname" . -}}
+{{- $component := "app" -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "proconnect-carte-agent.common.labels" (list . $component) | nindent 4 }}
+spec:
+  secretName: {{ $fullName }}-server-certificate
+  dnsNames:
+  {{- range .Values.certificate.dnsNames }}
+  - {{ . | quote }}
+  {{- end }}
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  usages:
+  - digital signature
+  - key encipherment
+{{- end }}
