@@ -8,11 +8,3 @@ app:
   envVars:
     BASE_URL: https://proconnect-carte-agent-staging.beta.numerique.gouv.fr
     LOG_LEVEL: DEBUG
-
-ingress:
-  enabled: true
-  host: proconnect-carte-agent-staging.beta.numerique.gouv.fr
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/proxy-buffer-size: 128k

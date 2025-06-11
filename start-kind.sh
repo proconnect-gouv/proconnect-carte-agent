@@ -36,12 +36,8 @@ containerdConfigPatches:
 nodes:
 - role: control-plane
   image: kindest/node:v1.27.3
-  kubeadmConfigPatches:
-  - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress-ready=true"
+- role: worker
+  image: kindest/node:v1.27.3
   extraPortMappings:
   - containerPort: 80
     hostPort: 80
@@ -49,10 +45,6 @@ nodes:
   - containerPort: 443
     hostPort: 443
     protocol: TCP
-- role: worker
-  image: kindest/node:v1.27.3
-- role: worker
-  image: kindest/node:v1.27.3
 EOF
 
 # 3. Add the registry config to the nodes
@@ -90,7 +82,3 @@ data:
     host: "localhost:${reg_port}"
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-kubectl -n ingress-nginx create secret tls mkcert --key /tmp/127.0.0.1.nip.io+1-key.pem --cert /tmp/127.0.0.1.nip.io+1.pem
-kubectl -n ingress-nginx patch deployments.apps ingress-nginx-controller --type 'json' -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--default-ssl-certificate=ingress-nginx/mkcert"}]'

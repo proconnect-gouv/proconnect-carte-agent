@@ -25,33 +25,6 @@ fullnameOverride: ""
 commonEnvVars: &commonEnvVars
   <<: []
 
-## @param ingress.enabled whether to enable the Ingress or not
-## @param ingress.className IngressClass to use for the Ingress
-## @param ingress.host Host for the Ingress
-## @param ingress.path Path to use for the Ingress
-ingress:
-  enabled: false
-  className: null
-  host: proconnect-carte-agent.example.com
-  paths:
-  - path: '/'
-    pathType: Prefix
-  ## @param ingress.hosts Additional host to configure for the Ingress
-  hosts: []
-  #  - chart-example.local
-  ## @param ingress.tls.enabled Weather to enable TLS for the Ingress
-  ## @skip ingress.tls.additional
-  ## @extra ingress.tls.additional[].secretName Secret name for additional TLS config
-  ## @extra ingress.tls.additional[].hosts[] Hosts for additional TLS config
-  tls:
-    enabled: true
-    additional: []
-
-  ## @param ingress.customBackends Add custom backends to ingress
-  customBackends: []
-
-  annotations: {}
-
 ## @section app
 
 app:
