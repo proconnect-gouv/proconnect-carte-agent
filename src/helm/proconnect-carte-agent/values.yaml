@@ -86,11 +86,11 @@ app:
   ## @param app.probes.readiness.targetPort [nullable] Configure port for app HTTP readiness probe
   ## @param app.probes.readiness.initialDelaySeconds [nullable] Configure initial delay for app readiness probe
   ## @param app.probes.readiness.initialDelaySeconds [nullable] Configure timeout for app readiness probe
-  probes:
-    liveness:
-      targetPort: 3000
-      path: /ping
-      initialDelaySeconds: 10
+  probes: {}
+    #liveness:
+    #  targetPort: 3000
+    #  path: /ping
+    #  initialDelaySeconds: 10
     #readiness:
     #  path: /__lbheartbeat__
     #  initialDelaySeconds: 10
