@@ -1,13 +1,10 @@
 #!/bin/sh
 set -o errexit
 
-CURRENT_DIR=$(pwd)
-
 # 0. Create ca
 mkcert -install
-cd /tmp
-mkcert "127.0.0.1.nip.io" "*.127.0.0.1.nip.io"
-cd $CURRENT_DIR
+rm -rf .mkcert && mkdir -p .mkcert
+mkcert -cert-file .mkcert/server-cert.pem -key-file .mkcert/server-key.pem "127.0.0.1.nip.io" "*.127.0.0.1.nip.io" "*.172.19.0.5.nip.io"
 
 # 1. Create registry container unless it already exists
 reg_name='kind-registry'
@@ -76,7 +73,8 @@ data:
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
 
+# Make the mkcert-generated private key available as a secret
 kubectl create namespace proconnect-carte-agent
-kubectl -n proconnect-carte-agent create secret tls proconnect-carte-agent-app-server-certificate --key /tmp/127.0.0.1.nip.io+1-key.pem --cert /tmp/127.0.0.1.nip.io+1.pem
+kubectl -n proconnect-carte-agent create secret tls proconnect-carte-agent-app-server-certificate --cert .mkcert/server-cert.pem --key .mkcert/server-key.pem
 
 echo "ℹ️ Remember to start 'cloud-provider-kind' to access LoadBalancer services"
