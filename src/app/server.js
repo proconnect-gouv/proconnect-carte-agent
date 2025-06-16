@@ -20,7 +20,7 @@ const serverOptions = {
   requestCert: true,
   secureOptions: require('constants').SSL_OP_NO_TLSv1_3, // Try disabling TLS 1.3
 
-  rejectUnauthorized: !(process.env.SERVER_ALLOW_INVALID_CERT == "true") // Node default is rejectUnauthorized==true
+  rejectUnauthorized: false // Node default is rejectUnauthorized==true
 };
 
 // Basic API endpoint
