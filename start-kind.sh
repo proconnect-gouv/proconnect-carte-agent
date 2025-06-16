@@ -38,13 +38,6 @@ nodes:
   image: kindest/node:v1.27.3
 - role: worker
   image: kindest/node:v1.27.3
-  extraPortMappings:
-  - containerPort: 80
-    hostPort: 80
-    protocol: TCP
-  - containerPort: 443
-    hostPort: 443
-    protocol: TCP
 EOF
 
 # 3. Add the registry config to the nodes
@@ -85,3 +78,5 @@ EOF
 
 kubectl create namespace proconnect-carte-agent
 kubectl -n proconnect-carte-agent create secret tls proconnect-carte-agent-app-server-certificate --key /tmp/127.0.0.1.nip.io+1-key.pem --cert /tmp/127.0.0.1.nip.io+1.pem
+
+echo "ℹ️ Remember to start 'cloud-provider-kind' to access LoadBalancer services"

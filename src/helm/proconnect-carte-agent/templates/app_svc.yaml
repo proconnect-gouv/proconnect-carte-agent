@@ -13,9 +13,10 @@ metadata:
 spec:
   type: {{ .Values.app.service.type }}
   ports:
-    - port: {{ .Values.app.service.port }}
-      targetPort: {{ .Values.app.service.targetPort }}
-      protocol: TCP
-      name: https
+  {{- range $port := .Values.app.service.ports }}
+    - name: {{ $port.name }}
+      port: {{ $port.port }}
+      targetPort: {{ $port.targetPort  }}
+  {{- end }}
   selector:
     {{- include "proconnect-carte-agent.common.selectorLabels" (list . $component) | nindent 4 }}
